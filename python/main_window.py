@@ -1,3 +1,5 @@
+from PySide2 import QtCore
+
 from PySide2.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -8,8 +10,6 @@ from PySide2.QtWidgets import (
     QToolBar,
     QStatusBar,
 )
-
-from PySide2.QtCore import QCoreApplication
 
 from window import Window
 
@@ -55,17 +55,20 @@ class MainWindow(QMainWindow):
 
         return button
 
+    @QtCore.Slot()
     def _callback_press(self):
         print("Clicked!")
 
+    @QtCore.Slot()
     def _callback_new_window(self, checked):
         if checked:
             self.window.show()
         else:
             self.window.hide()
 
+    @QtCore.Slot()
     def _callback_exit(self):
-        app = QCoreApplication.instance()
+        app = QtCore.QCoreApplication.instance()
         app.quit()
 
     def contextMenuEvent(self, event):
