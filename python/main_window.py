@@ -14,6 +14,7 @@ from PySide2.QtWidgets import (
 
 from window import Window
 from figure import Figure
+from worker import Worker
 
 
 class MainWindow(QMainWindow):
@@ -37,6 +38,13 @@ class MainWindow(QMainWindow):
 
         self.window = Window()
         self.figure = Figure()
+
+        # Run the worker in another thread
+        self.threadpool = QtCore.QThreadPool()
+        self.threadpool.setMaxThreadCount(2)
+
+        self._worker = Worker()
+        self.threadpool.start(self._worker)
 
     def _set_layout(self):
         button_press = self._set_button("Press", self._callback_press)
@@ -91,6 +99,7 @@ class MainWindow(QMainWindow):
 
     @QtCore.Slot()
     def _callback_exit(self):
+        self._worker.run_forever = False
         app = QtCore.QCoreApplication.instance()
         app.quit()
 
