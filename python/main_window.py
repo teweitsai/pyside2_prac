@@ -13,7 +13,7 @@ from PySide2.QtWidgets import (
 )
 
 from window import Window
-from figure import Figure
+from custom_figure import CustomFigure
 from worker import Worker
 
 
@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.setStatusBar(QStatusBar(self))
 
         self.window = Window()
-        self.figure = Figure()
+        self.figure = CustomFigure()
 
         # Run the worker in another thread
         self.threadpool = QtCore.QThreadPool()
@@ -113,8 +113,14 @@ class MainWindow(QMainWindow):
         app.quit()
 
     @QtCore.Slot()
-    def _callback_signal(self, val):
-        self.figure.data.setText(str(val))
+    def _callback_signal(self, new_value):
+
+        refresh = False
+        if self.button_new_figure.isChecked():
+            refresh = True
+            self.figure.data.setText(str(new_value))
+
+        self.figure.mpl_canvas.update_new_data(new_value, refresh=refresh)
 
     def contextMenuEvent(self, event):
         context = QMenu(self)
