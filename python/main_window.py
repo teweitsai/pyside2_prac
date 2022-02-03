@@ -13,6 +13,7 @@ from PySide2.QtWidgets import (
 )
 
 from window import Window
+from figure import Figure
 
 
 class MainWindow(QMainWindow):
@@ -22,6 +23,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Test Application")
 
         self.button_new_window = None
+        self.button_new_figure = None
 
         # Set the central widget of the Window
         container = QWidget()
@@ -34,17 +36,25 @@ class MainWindow(QMainWindow):
         self.setStatusBar(QStatusBar(self))
 
         self.window = Window()
+        self.figure = Figure()
 
     def _set_layout(self):
         button_press = self._set_button("Press", self._callback_press)
+
         self.button_new_window = self._set_button(
             "Window", self._callback_new_window, *["abc"], is_checkable=True
         )
+
+        self.button_new_figure = self._set_button(
+            "Figure", self._callback_new_figure, is_checkable=True
+        )
+
         button_exit = self._set_button("Exit", self._callback_exit)
 
         layout = QVBoxLayout()
         layout.addWidget(button_press)
         layout.addWidget(self.button_new_window)
+        layout.addWidget(self.button_new_figure)
         layout.addWidget(button_exit)
 
         return layout
@@ -70,6 +80,14 @@ class MainWindow(QMainWindow):
             self.window.show()
         else:
             self.window.hide()
+
+    @QtCore.Slot()
+    def _callback_new_figure(self):
+
+        if self.button_new_figure.isChecked():
+            self.figure.show()
+        else:
+            self.figure.hide()
 
     @QtCore.Slot()
     def _callback_exit(self):
