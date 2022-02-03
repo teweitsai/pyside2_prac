@@ -38,8 +38,7 @@ class MainWindow(QMainWindow):
     def _set_layout(self):
         button_press = self._set_button("Press", self._callback_press)
         self.button_new_window = self._set_button(
-            "New Window", self._callback_new_window, *["abc"],
-            is_checkable=True
+            "Window", self._callback_new_window, *["abc"], is_checkable=True
         )
         button_exit = self._set_button("Exit", self._callback_exit)
 
