@@ -1,3 +1,4 @@
+from functools import partial
 from PySide2 import QtCore
 
 from PySide2.QtWidgets import (
@@ -20,6 +21,8 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Test Application")
 
+        self.button_new_window = None
+
         # Set the central widget of the Window
         container = QWidget()
 
@@ -34,24 +37,25 @@ class MainWindow(QMainWindow):
 
     def _set_layout(self):
         button_press = self._set_button("Press", self._callback_press)
-        button_new_window = self._set_button(
-            "New Window", self._callback_new_window, is_checkable=True
+        self.button_new_window = self._set_button(
+            "New Window", self._callback_new_window, *["abc"],
+            is_checkable=True
         )
         button_exit = self._set_button("Exit", self._callback_exit)
 
         layout = QVBoxLayout()
         layout.addWidget(button_press)
-        layout.addWidget(button_new_window)
+        layout.addWidget(self.button_new_window)
         layout.addWidget(button_exit)
 
         return layout
 
-    def _set_button(self, name, callback, is_checkable=False):
+    def _set_button(self, name, callback, *args, is_checkable=False):
         button = QPushButton(name)
-        button.clicked.connect(callback)
-
         if is_checkable:
             button.setCheckable(is_checkable)
+
+        button.clicked.connect(partial(callback, *args))
 
         return button
 
@@ -60,8 +64,10 @@ class MainWindow(QMainWindow):
         print("Clicked!")
 
     @QtCore.Slot()
-    def _callback_new_window(self, checked):
-        if checked:
+    def _callback_new_window(self, value):
+        print(value)
+
+        if self.button_new_window.isChecked():
             self.window.show()
         else:
             self.window.hide()
