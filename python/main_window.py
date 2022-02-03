@@ -44,6 +44,7 @@ class MainWindow(QMainWindow):
         self.threadpool.setMaxThreadCount(2)
 
         self._worker = Worker()
+        self._worker.data_signal.data.connect(self._callback_signal)
         self.threadpool.start(self._worker)
 
     def _set_layout(self):
@@ -82,7 +83,7 @@ class MainWindow(QMainWindow):
 
     @QtCore.Slot()
     def _callback_new_window(self, value):
-        print(value)
+        print(f"Set the input: {value}")
 
         if self.button_new_window.isChecked():
             self.window.show()
@@ -100,8 +101,20 @@ class MainWindow(QMainWindow):
     @QtCore.Slot()
     def _callback_exit(self):
         self._worker.run_forever = False
+
+        msecs = 2000
+        isDone = self.threadpool.waitForDone(msecs)
+        if isDone:
+            print("The worker is done.")
+        else:
+            print("The worker is not done.")
+
         app = QtCore.QCoreApplication.instance()
         app.quit()
+
+    @QtCore.Slot()
+    def _callback_signal(self, val):
+        self.figure.data.setText(str(val))
 
     def contextMenuEvent(self, event):
         context = QMenu(self)

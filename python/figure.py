@@ -13,6 +13,10 @@ class Figure(QWidget):
         title = QLabel()
         title.setText("Test to show the figure")
 
+        self.data = QLabel()
+        self.data.setText("0")
+
         layout = QVBoxLayout()
         layout.addWidget(title)
+        layout.addWidget(self.data)
         self.setLayout(layout)
